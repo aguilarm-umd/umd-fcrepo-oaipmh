@@ -109,4 +109,6 @@ def mint_handle(config: dict, **json) -> str:
 
     handle = response.json().get('handle_url')
 
-    return handle
+    url_pattern = r'^(http|https):\/\/[a-z|.|-]*\/'
+
+    return re.sub(url_pattern, 'hdl:', handle)
