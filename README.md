@@ -1,11 +1,15 @@
+# add-handles
+
+[add-handles]
+
 # umd-fcrepo-oaipmh
 
 OAI-PMH Server for Fedora
 
 ## Purpose
 
-This is an [OAI-PMH] server for publishing metadata records from a Fedora 
-repository. It uses a Solr index for general queries, and connects 
+This is an [OAI-PMH] server for publishing metadata records from a Fedora
+repository. It uses a Solr index for general queries, and connects
 directly to Fedora to retrieve the full metadata record for an item.
 
 ## Development Environment
@@ -69,13 +73,13 @@ To run the application in debug mode, with hot code reloading:
 flask --app "oaipmh.web:create_app(solr_config_file='solr_conf.yml')" run
 ```
 
-The OAI-PMH service will be available at <http://localhost:5000/oai/api>, 
+The OAI-PMH service will be available at <http://localhost:5000/oai/api>,
 with a simple HTML landing page at <http://localhost:5000/oai>.
 
 To change the port, add a `BASE_URL` environment variable to the `.env` file:
 
 ```bash
-# set when using a URL and/or port other than 
+# set when using a URL and/or port other than
 # the defaults ("localhost" and "5000")
 BASE_URL=http://localhost:8000/oai/api
 ```
@@ -118,15 +122,15 @@ Build the image:
 docker build -t docker.lib.umd.edu/fcrepo-oaipmh:latest .
 ```
 
-If you need to build for multiple architectures (e.g., AMD and ARM), you 
-can use `docker buildx`. This assumes you have a builder named "local" 
-configured for use with your docker buildx system, and you are logged in 
+If you need to build for multiple architectures (e.g., AMD and ARM), you
+can use `docker buildx`. This assumes you have a builder named "local"
+configured for use with your docker buildx system, and you are logged in
 to a Docker repository that you can push images to:
 
 ```bash
 docker buildx build --builder local --platform linux/amd64,linux/arm64 \
     -t docker.lib.umd.edu/fcrepo-oaipmh:latest --push .
-    
+
 # then pull the image so it is available locally
 docker pull docker.lib.umd.edu/fcrepo-oaipmh:latest
 ```
@@ -144,7 +148,7 @@ docker run -d -p 5000:5000 \
     docker.lib.umd.edu/fcrepo-oaipmh:latest
 ```
 
-If you created a `.env` file (see [Configuration](#configuration)), you 
+If you created a `.env` file (see [Configuration](#configuration)), you
 can run the Docker image using that file.
 
 ```bash
@@ -153,7 +157,7 @@ docker run -d -p 5000:5000 \
     docker.lib.umd.edu/fcrepo-oaipmh:latest
 ```
 
-Note: To refer to services running on the host machine (e.g., Solr) in the 
+Note: To refer to services running on the host machine (e.g., Solr) in the
 configuration, you will need to use the hostname `host.docker.internal`
 instead of `localhost`.
 
@@ -161,3 +165,4 @@ instead of `localhost`.
 [pytest]: https://docs.pytest.org/en/7.3.x/
 [pytest-cov]: https://pypi.org/project/pytest-cov/
 [pycodestyle]: https://pycodestyle.pycqa.org/en/latest/
+[add-handles]: docs/add_handles.md
