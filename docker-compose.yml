@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  umd-fcrepo-oaipmh:
+    build: .
+    env_file:
+      - .env
+      - solr_conf.yml
+    ports:
+      - "5000:5000"
+    networks:
+      - umd-fcrepo
+
+networks:
+  umd-fcrepo:
+    external: true
+    name: umd-fcrepo_default
