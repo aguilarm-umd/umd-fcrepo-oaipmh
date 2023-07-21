@@ -71,12 +71,14 @@ def create_handles(reader: DictReader, config: dict) -> list:
             public_url = config['PUBLIC_BASE_URL'] + item_uuid + f"?relpath={relpath}"
 
             # Send http Request to Umd-Handle-API to mint handle
-            handle = mint_handle(config,
-                                 prefix='1903.1',
-                                 url=public_url,
-                                 repo='fcrepo',
-                                 repo_id=fcrepo_path
-                                 )
+            handle_url = mint_handle(config,
+                                     prefix='1903.1',
+                                     url=public_url,
+                                     repo='fcrepo',
+                                     repo_id=fcrepo_path
+                                     )
+
+            handle = extract_prefix_suffix(handle_url=handle_url)
 
             # Store handle
             row['Handle'] = handle
@@ -99,6 +101,12 @@ def extract_from_path(fcrepo_path: str) -> tuple[str, str]:
     return relpath, item_uuid
 
 
+def extract_prefix_suffix(handle_url: str) -> str:
+    url_pattern = r'^(http|https):\/\/.[^\/]*\/'
+
+    return re.sub(url_pattern, 'hdl:', handle_url)
+
+
 def mint_handle(config: dict, **json) -> str:
     endpoint = '/handles'
     headers = {'Authorization': f'Bearer {config["AUTH"]}'}
@@ -107,6 +115,6 @@ def mint_handle(config: dict, **json) -> str:
     if response.status_code != 200:
         raise RequestFailure(f"Got a {response.status_code} error code, check the configuration file.")
 
-    handle = response.json().get('handle_url')
+    handle_url = response.json().get('handle_url')
 
-    return handle
+    return handle_url

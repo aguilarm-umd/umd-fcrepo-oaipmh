@@ -1,6 +1,6 @@
 import pytest
 
-from oaipmh.add_handles import extract_from_path
+from oaipmh.add_handles import extract_from_path, extract_prefix_suffix
 
 
 @pytest.mark.parametrize(
@@ -27,3 +27,21 @@ def test_extract(fcrepo_path, expected_relpath, expected_uuid):
 def test_extract_failure():
     with pytest.raises(RuntimeError):
         extract_from_path('/foo/bar/no/pairtree')
+
+
+@pytest.mark.parametrize(
+        ('handle_url', 'expected_handle'),
+        [
+            (
+                'http://hdl-local.lib.umd.edu/1903.1/329',
+                'hdl:1903.1/329'
+            ),
+            (
+                'https://hdl-local.lib.umd.edu/1903.1/330',
+                'hdl:1903.1/330'
+            )
+        ]
+)
+def test_extract_handle(handle_url, expected_handle):
+    handle = extract_prefix_suffix(handle_url=handle_url)
+    assert expected_handle == handle
