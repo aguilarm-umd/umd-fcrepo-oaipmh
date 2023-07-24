@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt
 COPY src pyproject.toml /opt/umd-fcrepo-oaipmh/
 RUN pip install -e .
 
-CMD ["fcrepo-oaipmh-server"]
+ENTRYPOINT ["fcrepo-oaipmh-server"]
