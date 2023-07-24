@@ -27,6 +27,7 @@ class Index:
         self.solr = solr_client
         logger.info(f'Solr URL: {self.solr.url}')
         logger.debug(f'Index configuration: {config}')
+        logger.debug(f'All sets: {self.get_sets()}')
 
     @property
     def auto_create_sets(self):
