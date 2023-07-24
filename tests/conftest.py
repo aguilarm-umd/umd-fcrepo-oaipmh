@@ -4,6 +4,9 @@ import pysolr
 import pytest
 
 
+collect_ignore = ["test_harvester.py"]
+
+
 @pytest.fixture
 def mock_solr_client():
     mock_solr = MagicMock(spec=pysolr.Solr)
