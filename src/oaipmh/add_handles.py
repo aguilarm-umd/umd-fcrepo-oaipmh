@@ -62,7 +62,7 @@ def create_handles(reader: DictReader, config: dict) -> list:
     exports = []
     for row in reader:
         if 'Handle' not in row or row['Handle'] is None:
-            if row['URI'].startswith(config['BASE_URL']) is False:
+            if not row['URI'].startswith(config['BASE_URL']):
                 logger.warning(f"The URI ({row['URI']}) does not start with the BASE_URL ({config['BASE_URL']})")
                 logger.warning("Skipping creating a handle for this URI")
                 exports.append(row)
