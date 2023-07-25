@@ -65,7 +65,7 @@ class DataProvider(DataInterface):
     def get_oai_identifier(self, handle: str) -> OAIIdentifier:
         """
         Given a handle, return a full OAI identifier.
-        
+
         :param handle: resource handle, e.g. "1903.1/12345"
         :return: OAI Identifier
         """

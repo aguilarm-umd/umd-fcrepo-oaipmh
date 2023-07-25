@@ -62,10 +62,17 @@ def create_handles(reader: DictReader, config: dict) -> list:
     exports = []
     for row in reader:
         if 'Handle' not in row or row['Handle'] is None:
+            if not row['URI'].startswith(config['BASE_URL']):
+                logger.warning(f"The URI ({row['URI']}) does not start with the BASE_URL ({config['BASE_URL']})")
+                logger.warning("Skipping creating a handle for this URI")
+                exports.append(row)
+                continue
+
             fcrepo_path = row['URI'].replace(config['BASE_URL'], '')
 
             # extract relpath and uuid from fcrepo path
             relpath, item_uuid = extract_from_path(fcrepo_path)
+            relpath = relpath.replace('/', ':')
 
             # create url for http request
             public_url = config['PUBLIC_BASE_URL'] + item_uuid + f"?relpath={relpath}"
