@@ -50,6 +50,10 @@ FCREPO_JWT_TOKEN=...
 SOLR_URL=...
 # enable debugging and hot reloading when run via "flask run"
 FLASK_DEBUG=1
+# HTTP Proxy for the minted handles
+# e.g (https://hdl.handle.net/)
+# Don't forget to include the / at the end
+HANDLE_PROXY_PREFIX=...
 ```
 
 And create a `solr_conf.yml` file with the following contents:

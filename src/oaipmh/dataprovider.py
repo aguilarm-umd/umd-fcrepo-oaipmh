@@ -54,6 +54,7 @@ class DataProvider(DataInterface):
     oai_repository_name = EnvAttribute('OAI_REPOSITORY_NAME')
     oai_namespace_identifier = EnvAttribute('OAI_NAMESPACE_IDENTIFIER')
     report_deleted_records = EnvAttribute('REPORT_DELETED_RECORDS', 'no')
+    handle_proxy_prefix = EnvAttribute('HANDLE_PROXY_PREFIX')
     limit: int = EnvAttribute('PAGE_SIZE', 25)
 
     def __init__(self, index: Index):
@@ -111,7 +112,7 @@ class DataProvider(DataInterface):
             transform = self._transformers[target_format]
         except KeyError:
             raise OAIErrorCannotDisseminateFormat
-        return transform(xml_root)
+        return transform(xml_root, handle_proxy_prefix=f'"{self.handle_proxy_prefix}"')
 
     def get_identify(self) -> Identify:
         return Identify(
