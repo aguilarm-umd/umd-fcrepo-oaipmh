@@ -10,6 +10,7 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
   <xsl:strip-space elements="*"/>
+  <xsl:param name="handle_proxy_prefix" />
 
   <xsl:template match="text()"/>
 
@@ -52,8 +53,11 @@
 
   <!-- identifier -->
   <xsl:template match="dcterms:identifier">
-    <dc:identifier><xsl:value-of select="."/></dc:identifier>
-  </xsl:template>
+  <dc:identifier><xsl:value-of select="."/></dc:identifier>
+  <xsl:if test="starts-with(., 'hdl:')">
+    <dc:identifier><xsl:value-of select="$handle_proxy_prefix"/><xsl:value-of select="substring(., 5)"/></dc:identifier>
+  </xsl:if>
+</xsl:template>
 
   <!-- language -->
   <xsl:template match="dc:language">
