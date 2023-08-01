@@ -76,7 +76,7 @@ def create_app(data_provider: DataProvider) -> Flask:
         Protocol 2.0 Specification</a> for information about how to use this service.</p>
         """
 
-    @_app.route('/oai/api')
+    @_app.route('/oai/api', methods=['GET', 'POST'])
     def endpoint():
         try:
             repo = OAIRepository(data_provider)
