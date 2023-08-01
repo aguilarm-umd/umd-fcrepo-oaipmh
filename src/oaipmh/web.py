@@ -40,25 +40,29 @@ def get_config(config_source: Optional[str | TextIO] = None) -> dict[str, Any]:
         return yaml.safe_load(config_source)
 
 
-def create_app(solr_config_file) -> Flask:
-    app = Flask(
-        import_name=__name__,
-        static_url_path='/oai/static',
-    )
-    app.logger.info(f'Starting umd-fcrepo-oaipmh/{__version__}')
+def app(solr_config_file: Optional[str] = None) -> Flask:
     index = Index(
         config=get_config(solr_config_file),
         solr_client=pysolr.Solr(os.environ['SOLR_URL']),
     )
     data_provider = DataProvider(index=index)
-    app.logger.debug(f'Initialized the data provider: {data_provider.get_identify()}')
+    return create_app(data_provider)
+
+
+def create_app(data_provider: DataProvider) -> Flask:
+    _app = Flask(
+        import_name=__name__,
+        static_url_path='/oai/static',
+    )
+    _app.logger.info(f'Starting umd-fcrepo-oaipmh/{__version__}')
+    _app.logger.debug(f'Initialized the data provider: {data_provider.get_identify()}')
     use_xsl_stylesheet = bool(os.environ.get('XSL_STYLESHEET'))
 
-    @app.route('/')
+    @_app.route('/')
     def root():
         return redirect(url_for('home'))
 
-    @app.route('/oai')
+    @_app.route('/oai')
     def home():
         identify_url = data_provider.base_url + '?verb=Identify'
         return f"""
@@ -72,7 +76,7 @@ def create_app(solr_config_file) -> Flask:
         Protocol 2.0 Specification</a> for information about how to use this service.</p>
         """
 
-    @app.route('/oai/api')
+    @_app.route('/oai/api')
     def endpoint():
         try:
             repo = OAIRepository(data_provider)
@@ -80,12 +84,12 @@ def create_app(solr_config_file) -> Flask:
         except OAIRepoExternalException as e:
             # An API call timed out or returned a non-200 HTTP code.
             # Log the failure and abort with server HTTP 503.
-            app.logger.error(f'Upstream error: {e}')
+            _app.logger.error(f'Upstream error: {e}')
             abort(HTTPStatus.SERVICE_UNAVAILABLE, str(e))
         except OAIRepoInternalException as e:
             # There is a fault in how the DataInterface was implemented.
             # Log the failure and abort with server HTTP 500.
-            app.logger.error(f'Internal error: {e}')
+            _app.logger.error(f'Internal error: {e}')
             abort(HTTPStatus.INTERNAL_SERVER_ERROR)
         else:
             document: _ElementTree = ElementTree(response.root())
@@ -98,4 +102,4 @@ def create_app(solr_config_file) -> Flask:
                 {'Content-Type': 'application/xml'},
             )
 
-    return app
+    return _app

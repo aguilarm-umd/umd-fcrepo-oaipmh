@@ -137,7 +137,7 @@ class DataProvider(DataInterface):
         return RecordHeader(
             identifier=identifier,
             datestamp=granularity_format(self.datestamp_granularity, last_modified),
-            setspecs=self.index.get_sets_for_handle(handle),
+            setspecs=list(self.index.get_sets_for_handle(handle).keys()),
         )
 
     def get_record_metadata(self, identifier: str, metadataprefix: str) -> _Element | None:
