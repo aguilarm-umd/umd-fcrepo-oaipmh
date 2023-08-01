@@ -45,3 +45,18 @@ def test_extract_failure():
 def test_extract_handle(handle_url, expected_handle):
     handle = extract_prefix_suffix(handle_url=handle_url)
     assert expected_handle == handle
+
+
+@pytest.mark.parametrize(
+        ('handle_url'),
+        [
+            (''),
+            ('not_a_handle'),
+            ('blah://hdl-local.lib.umd.edu/1903.1/330'),
+            ('htts://hdl-local.lib.umd.edu/1903.1/330'),
+            ('https:hdl-local.lib.umd.edu/1903.1/330')
+        ]
+)
+def test_false_handles(handle_url):
+    # The regex pattern shouldn't match and the original string returned
+    assert extract_prefix_suffix(handle_url=handle_url) == handle_url
