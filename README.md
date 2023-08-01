@@ -28,7 +28,7 @@ git clone git@github.com:umd-lib/umd-fcrepo-oaipmh.git
 cd umd-fcrepo-oaipmh
 pyenv install --skip-existing $(cat .python-version)
 python -m venv .venv --prompt umd-fcrepo-oaipmh-py$(cat .python-version)
-pip install -r test.requirements.txt -e .
+pip install -r requirements.test.txt -e .
 ```
 
 ### Configuration
