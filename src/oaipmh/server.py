@@ -5,9 +5,8 @@ from dotenv import load_dotenv
 from waitress import serve
 
 from oaipmh import __version__
-from oaipmh.web import create_app
+from oaipmh.web import app
 
-load_dotenv()
 logger = logging.getLogger(__name__)
 
 
@@ -26,11 +25,15 @@ logger = logging.getLogger(__name__)
 @click.version_option(__version__, '--version', '-V')
 @click.help_option('--help', '-h')
 def run(listen, solr_config_file):
+    load_dotenv()
     server_identity = f'umd-fcrepo-oaipmh/{__version__}'
     logger.info(f'Starting {server_identity}')
     try:
-        app = create_app(solr_config_file=solr_config_file)
-        serve(app, listen=listen, ident=server_identity)
+        serve(
+            app=app(solr_config_file=solr_config_file),
+            listen=listen,
+            ident=server_identity,
+        )
     except (OSError, RuntimeError) as e:
         logger.error(f'Exiting: {e}')
         raise SystemExit(1) from e
