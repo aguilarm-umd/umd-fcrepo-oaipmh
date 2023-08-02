@@ -80,7 +80,12 @@ def create_app(data_provider: DataProvider) -> Flask:
     def endpoint():
         try:
             repo = OAIRepository(data_provider)
-            response = repo.process(request.args.copy())
+            # combine all possible parameters to the request
+            parameters = {
+                **request.args,
+                **request.form,
+            }
+            response = repo.process(parameters)
         except OAIRepoExternalException as e:
             # An API call timed out or returned a non-200 HTTP code.
             # Log the failure and abort with server HTTP 503.

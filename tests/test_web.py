@@ -74,6 +74,13 @@ def test_get_config_from_file(datadir, sample_config):
         assert get_config(fh) == sample_config
 
 
+def test_root(data_provider):
+    app = create_app(data_provider)
+    app_client = app.test_client()
+    response = app_client.get('/')
+    assert response.status_code == 302
+
+
 def test_home(data_provider):
     app = create_app(data_provider)
     app_client = app.test_client()
@@ -82,48 +89,32 @@ def test_home(data_provider):
 
 
 @pytest.mark.parametrize(
-    ('http_method',),
-    [['get'], ['post']],
+    ('verb', 'parameters'),
+    [
+        ['Identify', {}],
+        ['ListSets', {}],
+        ['ListMetadataFormats', {}],
+        ['ListIdentifiers', {'metadataPrefix': 'oai_dc'}],
+    ]
 )
-def test_identify(http_method, data_provider):
+def test_oai_get(data_provider, verb, parameters):
     app = create_app(data_provider=data_provider)
     app_client = app.test_client()
-    request = getattr(app_client, http_method)
-    response = request('/oai/api?verb=Identify')
+    response = app_client.get('/oai/api', query_string={'verb': verb, **parameters})
     assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
-    ('http_method',),
-    [['get'], ['post']],
+    ('verb', 'parameters'),
+    [
+        ['Identify', {}],
+        ['ListSets', {}],
+        ['ListMetadataFormats', {}],
+        ['ListIdentifiers', {'metadataPrefix': 'oai_dc'}],
+    ]
 )
-def test_list_sets(http_method, data_provider):
+def test_oai_post(data_provider, verb, parameters):
     app = create_app(data_provider=data_provider)
     app_client = app.test_client()
-    request = getattr(app_client, http_method)
-    response = request('/oai/api?verb=ListSets')
-    assert response.status_code == 200
-
-
-@pytest.mark.parametrize(
-    ('http_method',),
-    [['get'], ['post']],
-)
-def test_list_metadata_formats(http_method, data_provider):
-    app = create_app(data_provider=data_provider)
-    app_client = app.test_client()
-    request = getattr(app_client, http_method)
-    response = request('/oai/api?verb=ListMetadataFormats')
-    assert response.status_code == 200
-
-
-@pytest.mark.parametrize(
-    ('http_method',),
-    [['get'], ['post']],
-)
-def test_list_identifiers(http_method, data_provider):
-    app = create_app(data_provider=data_provider)
-    app_client = app.test_client()
-    request = getattr(app_client, http_method)
-    response = request('/oai/api?verb=ListIdentifiers&metadataPrefix=oai_dc')
+    response = app_client.post('/oai/api', data={'verb': verb, **parameters})
     assert response.status_code == 200
