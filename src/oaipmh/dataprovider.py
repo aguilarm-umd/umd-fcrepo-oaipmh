@@ -140,16 +140,6 @@ class DataProvider(DataInterface):
             setspecs=list(self.index.get_sets_for_handle(handle).keys()),
         )
 
-    def get_record_metadata(self, identifier: str, metadataprefix: str) -> _Element | None:
-        uri = self.get_uri(identifier)
-        response = self.session.get(uri, headers={'Accept': 'application/rdf+xml'})
-        if response.ok:
-            rdf_xml = etree.fromstring(response.text)
-            return self.transform(metadataprefix, rdf_xml)
-        else:
-            logger.error(f'GET {uri} -> {response.status_code} {response.reason}')
-            raise OAIRepoExternalException('Unable to retrieve resource from fcrepo')
-
     def get_record_abouts(self, identifier: str) -> list[_Element]:
         return []
 
@@ -184,3 +174,22 @@ class DataProvider(DataInterface):
         results = self.index.get_docs(filter_from, filter_until, filter_set, start=cursor, rows=self.limit)
         identifiers = [str(self.get_oai_identifier(doc[self.index.handle_field])) for doc in results]
         return identifiers, results.hits, None
+
+
+class FedoraDataProvider(DataProvider):
+    def __init__(self, index: Index):
+        super().__init__(index)
+        self.index = index
+        self.session = Session()
+        self.session.auth = HTTPBearerAuth(os.environ.get('FCREPO_JWT_TOKEN'))
+        self._transformers = load_transformers()
+
+    def get_record_metadata(self, identifier: str, metadataprefix: str) -> _Element | None:
+        uri = self.get_uri(identifier)
+        response = self.session.get(uri, headers={'Accept': 'application/rdf+xml'})
+        if response.ok:
+            rdf_xml = etree.fromstring(response.text)
+            return self.transform(metadataprefix, rdf_xml)
+        else:
+            logger.error(f'GET {uri} -> {response.status_code} {response.reason}')
+            raise OAIRepoExternalException('Unable to retrieve resource from fcrepo')
