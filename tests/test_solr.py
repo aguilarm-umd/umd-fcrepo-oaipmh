@@ -85,11 +85,11 @@ def test_search_solr_error(mock_solr_client):
 
 
 def test_get_sets_missing_auto_set_config(mock_solr_client):
-    index = Index(
-        config={**DEFAULT_SOLR_CONFIG, 'auto_create_sets': True},
-        solr_client=mock_solr_client,
-    )
     with pytest.raises(OAIRepoInternalException):
+        index = Index(
+                    config={**DEFAULT_SOLR_CONFIG, 'auto_create_sets': True},
+                    solr_client=mock_solr_client,
+                )
         index.get_sets()
 
 

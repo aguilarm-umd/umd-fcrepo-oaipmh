@@ -28,7 +28,7 @@ git clone git@github.com:umd-lib/umd-fcrepo-oaipmh.git
 cd umd-fcrepo-oaipmh
 pyenv install --skip-existing $(cat .python-version)
 python -m venv .venv --prompt umd-fcrepo-oaipmh-py$(cat .python-version)
-pip install -r test.requirements.txt -e .
+pip install -r requirements.test.txt -e .
 ```
 
 ### Configuration
@@ -79,7 +79,7 @@ For full configuration information, see
 To run the application in debug mode, with hot code reloading:
 
 ```bash
-flask --app "oaipmh.web:create_app(solr_config_file='solr_conf.yml')" run
+flask --app "oaipmh.web:app(solr_config_file='solr_conf.yml')" run
 ```
 
 The OAI-PMH service will be available at <http://localhost:5000/oai/api>,
