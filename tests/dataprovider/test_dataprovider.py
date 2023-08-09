@@ -5,7 +5,7 @@ from lxml import etree
 from oai_repo import Set, RecordHeader
 from oai_repo.exceptions import OAIErrorCannotDisseminateFormat, OAIRepoExternalException
 
-from oaipmh.dataprovider import DataProvider
+from oaipmh.dataprovider import DataProvider, FedoraDataProvider
 from oaipmh.oai import OAIIdentifier
 from oaipmh.solr import Index, DEFAULT_SOLR_CONFIG
 
@@ -204,14 +204,15 @@ class OKResponse:
         return self
 
 
-def test_get_record_metadata(provider, prange_text):
-    provider.session.get = MagicMock(return_value=OKResponse(prange_text))
+def test_get_record_metadata(index_with_auto_sets, prange_text):
+    fedora_provider = FedoraDataProvider(index_with_auto_sets)
+    fedora_provider.session.get = MagicMock(return_value=OKResponse(prange_text))
     results = MagicMock()
     results.docs = [{'id': 'http://example.com/foo', 'handle': 'foo'}]
-    provider.index.solr.search = MagicMock(return_value=results)
+    fedora_provider.index.solr.search = MagicMock(return_value=results)
 
-    assert provider.get_record_metadata('oai:fcrepo:foo', 'oai_dc') is not None
-    assert provider.index.solr.search.call_count == 1
+    assert fedora_provider.get_record_metadata('oai:fcrepo:foo', 'oai_dc') is not None
+    assert fedora_provider.index.solr.search.call_count == 1
 
 
 class NotFoundResponse:
@@ -220,10 +221,11 @@ class NotFoundResponse:
     reason = 'Not Found'
 
 
-def test_get_record_metadata_not_found(provider):
-    provider.session.get = MagicMock(return_value=NotFoundResponse())
+def test_get_record_metadata_not_found(index_with_auto_sets):
+    fedora_provider = FedoraDataProvider(index=index_with_auto_sets)
+    fedora_provider.session.get = MagicMock(return_value=NotFoundResponse())
     with pytest.raises(OAIRepoExternalException) as e:
-        provider.get_record_metadata('oai:fcrepo:foo', 'oai_dc')
+        fedora_provider.get_record_metadata('oai:fcrepo:foo', 'oai_dc')
 
     assert str(e.value) == 'Unable to retrieve resource from fcrepo'
 
