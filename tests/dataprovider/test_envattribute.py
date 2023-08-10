@@ -1,4 +1,4 @@
-from oaipmh.dataprovider import EnvAttribute
+from oaipmh.utils import EnvAttribute
 
 
 def test_descriptor(monkeypatch):
