@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import pytest
 from oai_repo.response import OAIResponse
 
-from oaipmh.dataprovider import DataProvider
+from oaipmh.dataprovider import DataProvider, DataProviderType
 from oaipmh.solr import Index, DEFAULT_SOLR_CONFIG
 from oaipmh.web import create_app, get_config, status
 
@@ -118,3 +118,20 @@ def test_oai_post(data_provider, verb, parameters):
     app_client = app.test_client()
     response = app_client.post('/oai/api', data={'verb': verb, **parameters})
     assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    ('data_provider_type'),
+    ['Fedora']
+)
+def test_dataprovider_enum_valid(data_provider_type):
+    assert DataProviderType[data_provider_type] is not None
+
+
+@pytest.mark.parametrize(
+    ('data_provider_type'),
+    ['Fedoraa', 'asdf', 'not_a_valid_provider']
+)
+def test_dataprovider_enum_invalid(data_provider_type):
+    with pytest.raises(KeyError):
+        DataProviderType[data_provider_type]
