@@ -12,7 +12,7 @@ from oai_repo import OAIRepository, OAIRepoInternalException, OAIRepoExternalExc
 from oai_repo.response import OAIResponse
 
 from oaipmh import __version__
-from oaipmh.dataprovider import DataProvider
+from oaipmh.dataprovider import DataProvider, FedoraDataProvider
 from oaipmh.solr import Index, DEFAULT_SOLR_CONFIG
 
 
@@ -45,7 +45,7 @@ def app(solr_config_file: Optional[str] = None) -> Flask:
         config=get_config(solr_config_file),
         solr_client=pysolr.Solr(os.environ['SOLR_URL']),
     )
-    data_provider = DataProvider(index=index)
+    data_provider = FedoraDataProvider(index=index)
     return create_app(data_provider)
 
 
