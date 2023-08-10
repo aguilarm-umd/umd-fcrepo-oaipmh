@@ -3,6 +3,7 @@ import os
 from dataclasses import MISSING
 from datetime import datetime
 from typing import Optional, Any
+from enum import Enum
 
 from lxml import etree
 # noinspection PyProtectedMember
@@ -193,3 +194,7 @@ class FedoraDataProvider(DataProvider):
         else:
             logger.error(f'GET {uri} -> {response.status_code} {response.reason}')
             raise OAIRepoExternalException('Unable to retrieve resource from fcrepo')
+
+
+class DataProviderType(Enum):
+    Fedora = FedoraDataProvider

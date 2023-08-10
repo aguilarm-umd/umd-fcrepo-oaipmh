@@ -1,4 +1,5 @@
 import logging
+from os import environ
 
 import click
 from dotenv import load_dotenv
@@ -30,7 +31,7 @@ def run(listen, solr_config_file):
     logger.info(f'Starting {server_identity}')
     try:
         serve(
-            app=app(solr_config_file=solr_config_file),
+            app=app(solr_config_file=solr_config_file, data_provider_type=environ['DATA_PROVIDER_TYPE']),
             listen=listen,
             ident=server_identity,
         )

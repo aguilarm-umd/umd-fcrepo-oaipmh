@@ -12,7 +12,7 @@ from oai_repo import OAIRepository, OAIRepoInternalException, OAIRepoExternalExc
 from oai_repo.response import OAIResponse
 
 from oaipmh import __version__
-from oaipmh.dataprovider import DataProvider, FedoraDataProvider
+from oaipmh.dataprovider import DataProvider, FedoraDataProvider, DataProviderType
 from oaipmh.solr import Index, DEFAULT_SOLR_CONFIG
 
 
@@ -40,12 +40,20 @@ def get_config(config_source: Optional[str | TextIO] = None) -> dict[str, Any]:
         return yaml.safe_load(config_source)
 
 
-def app(solr_config_file: Optional[str] = None) -> Flask:
+def app(solr_config_file: Optional[str] = None, data_provider_type: Optional[str] = None) -> Flask:
     index = Index(
         config=get_config(solr_config_file),
         solr_client=pysolr.Solr(os.environ['SOLR_URL']),
     )
-    data_provider = FedoraDataProvider(index=index)
+
+    try:
+        if data_provider_type is None:
+            data_provider = DataProviderType[os.environ['DATA_PROVIDER_TYPE']].value(index=index)
+        else:
+            data_provider = DataProviderType[data_provider_type].value(index=index)
+    except KeyError:
+        raise RuntimeError(f'"{data_provider_type}" is not a valid data provider type')
+
     return create_app(data_provider)
 
 
