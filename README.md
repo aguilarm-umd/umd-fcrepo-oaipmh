@@ -54,6 +54,8 @@ FLASK_DEBUG=1
 # e.g (https://hdl.handle.net/)
 # Don't forget to include the / at the end
 HANDLE_PROXY_PREFIX=...
+# Type of Dataprovider (Fedora, Avalon)
+DATA_PROVIDER_TYPE=...
 ```
 
 And create a `solr_conf.yml` file with the following contents:
@@ -79,7 +81,7 @@ For full configuration information, see
 To run the application in debug mode, with hot code reloading:
 
 ```bash
-flask --app "oaipmh.web:app(solr_config_file='solr_conf.yml')" run
+flask --app "oaipmh.web:app(solr_config_file='solr_conf.yml', data_provider_type='Fedora')" run
 ```
 
 The OAI-PMH service will be available at <http://localhost:5000/oai/api>,
@@ -97,7 +99,7 @@ And add `-p {port number}` to the `flask` command:
 
 ```bash
 # for example, to run on port 8000
-flask --app "oaipmh.web:create_app(solr_config_file='solr_conf.yml')" run -p 8000
+flask --app "oaipmh.web:create_app(solr_config_file='solr_conf.yml', data_provider_type='Fedora')" run -p 8000
 ```
 
 ### Testing

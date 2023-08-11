@@ -5,7 +5,7 @@ from lxml import etree
 from oai_repo import Set, RecordHeader
 from oai_repo.exceptions import OAIErrorCannotDisseminateFormat, OAIRepoExternalException
 
-from oaipmh.dataprovider import DataProvider, FedoraDataProvider
+from oaipmh.dataprovider import DataProvider, FedoraDataProvider, DataProviderType
 from oaipmh.oai import OAIIdentifier
 from oaipmh.solr import Index, DEFAULT_SOLR_CONFIG
 
@@ -240,3 +240,20 @@ def test_list_identifiers(monkeypatch, provider, mock_solr_client, mock_solr_res
         'oai:fcrepo:1903.1/sample2',
         'oai:fcrepo:1903.1/sample3',
     ]
+
+
+@pytest.mark.parametrize(
+    ('data_provider_type', 'expected_class'),
+    [('Fedora', FedoraDataProvider)]
+)
+def test_dataprovider_enum_valid(data_provider_type, expected_class):
+    assert DataProviderType[data_provider_type].value is expected_class
+
+
+@pytest.mark.parametrize(
+    ('data_provider_type',),
+    ['Fedoraa', 'asdf', 'not_a_valid_provider']
+)
+def test_dataprovider_enum_invalid(data_provider_type):
+    with pytest.raises(KeyError):
+        DataProviderType[data_provider_type]
