@@ -17,34 +17,10 @@ from requests_jwtauth import HTTPBearerAuth
 from oaipmh.oai import OAIIdentifier
 from oaipmh.solr import Index
 from oaipmh.transformers import load_transformers
+from oaipmh.utils import EnvAttribute
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
-
-class EnvAttribute:
-    """
-    Descriptor class that maps an attribute of a class to an environment variable.
-    """
-    def __init__(self, env_var: str, default: Optional[Any] = MISSING):
-        self.env_var = env_var
-        self.default = default
-
-    def __set_name__(self, owner, name):
-        self.name = name
-
-    def __get__(self, instance, owner):
-        if self.default is not MISSING:
-            value = os.environ.get(self.env_var, self.default)
-        else:
-            value = os.environ.get(self.env_var)
-
-        # if this attribute has a type annotation, use it to cast the
-        # string value from the environment variable to some other type
-        if getattr(instance, '__annotations__', False) and self.name in instance.__annotations__:
-            return instance.__annotations__[self.name](value)
-        else:
-            return value
 
 
 class DataProvider(DataInterface):
