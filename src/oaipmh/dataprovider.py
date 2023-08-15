@@ -1,9 +1,7 @@
 import logging
-import os
-from dataclasses import MISSING
 from datetime import datetime
-from typing import Optional, Any
 from enum import Enum
+from os import environ
 
 from lxml import etree
 # noinspection PyProtectedMember
@@ -37,7 +35,6 @@ class DataProvider(DataInterface):
     def __init__(self, index: Index):
         self.index = index
         self.session = Session()
-        self.session.auth = HTTPBearerAuth(os.environ.get('FCREPO_JWT_TOKEN'))
         self._transformers = load_transformers()
 
     def get_oai_identifier(self, handle: str) -> OAIIdentifier:
@@ -156,10 +153,7 @@ class DataProvider(DataInterface):
 class FedoraDataProvider(DataProvider):
     def __init__(self, index: Index):
         super().__init__(index)
-        self.index = index
-        self.session = Session()
-        self.session.auth = HTTPBearerAuth(os.environ.get('FCREPO_JWT_TOKEN'))
-        self._transformers = load_transformers()
+        self.session.auth = HTTPBearerAuth(environ.get('FCREPO_JWT_TOKEN'))
 
     def get_record_metadata(self, identifier: str, metadataprefix: str) -> _Element | None:
         uri = self.get_uri(identifier)
