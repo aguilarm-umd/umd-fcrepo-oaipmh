@@ -22,4 +22,4 @@ class OAIIdentifier:
         self.local_identifier = local_identifier
 
     def __str__(self):
-        return f'oai:{self.namespace_identifier}:{urllib.parse.quote(self.local_identifier)}'
+        return f'oai:{self.namespace_identifier}:{urllib.parse.quote(str(self.local_identifier))}'
