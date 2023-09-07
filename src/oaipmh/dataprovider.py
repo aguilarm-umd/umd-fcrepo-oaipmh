@@ -166,5 +166,49 @@ class FedoraDataProvider(DataProvider):
             raise OAIRepoExternalException('Unable to retrieve resource from fcrepo')
 
 
+class AvalonDataProvider(DataProvider):
+    avalon_public_url = EnvAttribute('AVALON_PUBLIC_URL')
+    schema_location = "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd"
+    xsi = "http://www.w3.org/2001/XMLSchema-instance"
+    oai_dc = "http://www.openarchives.org/OAI/2.0/oai_dc/"
+    dc = "http://purl.org/dc/elements/1.1/"
+    ns = {"xsi": xsi, "oai_dc": oai_dc}
+
+    def __init__(self, index: Index):
+        super().__init__(index)
+
+    def get_record_metadata(self, identifier: str, metadataprefix: str) -> _Element | None:
+        uri = self.get_uri(identifier)
+        response = self.session.get(self.avalon_public_url + uri + '.json')
+        if response.ok:
+            handle = OAIIdentifier.parse(identifier).local_identifier
+            metadata = response.json()['fields']
+
+            root = etree.Element(
+                "{" + self.oai_dc + "}dc", attrib={"{" + self.xsi + "}schemaLocation": self.schema_location},
+                nsmap=self.ns
+            )
+
+            etree.SubElement(root, "{" + self.dc + "}" + "title").text = metadata['title']
+            etree.SubElement(root, "{" + self.dc + "}" + "identifier").text = handle
+            etree.SubElement(root, "{" + self.dc + "}" + "creator").text = ', '.join(metadata['creator'])
+            etree.SubElement(root, "{" + self.dc + "}" + "contributor").text = ', '.join(metadata['contributor'])
+            etree.SubElement(root, "{" + self.dc + "}" + "subject").text = ', '.join(metadata['subject'])
+            etree.SubElement(root, "{" + self.dc + "}" + "rights").text = metadata['rights_statement']
+            etree.SubElement(root, "{" + self.dc + "}" + "date").text = metadata['date_created']
+            etree.SubElement(root, "{" + self.dc + "}" + "coverage").text = ', '.join(metadata['geographic_subject'])
+            etree.SubElement(root, "{" + self.dc + "}" + "format").text = ', '.join(metadata['format'])
+            etree.SubElement(root, "{" + self.dc + "}" + "type").text = ', '.join(metadata['genre'])
+            etree.SubElement(root, "{" + self.dc + "}" + "format").text = ', '.join(metadata['avalon_resource_type'])
+            etree.SubElement(root, "{" + self.dc + "}" + "publisher").text = ', '.join(metadata['publisher'])
+
+            return root
+
+        else:
+            logger.error(f'GET {uri} -> {response.status_code} {response.reason}')
+            raise OAIRepoExternalException('Unable to retrieve resource from fcrepo')
+
+
 class DataProviderType(Enum):
-    Fedora = FedoraDataProvider
+    fedora = FedoraDataProvider
+    avalon = AvalonDataProvider
