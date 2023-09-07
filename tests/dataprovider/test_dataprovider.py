@@ -2,12 +2,15 @@ from unittest.mock import MagicMock
 
 import pytest
 from lxml import etree
+from os import environ
 from oai_repo import Set, RecordHeader
 from oai_repo.exceptions import OAIErrorCannotDisseminateFormat, OAIRepoExternalException
 
 from oaipmh.dataprovider import DataProvider, FedoraDataProvider, DataProviderType
 from oaipmh.oai import OAIIdentifier
 from oaipmh.solr import Index, DEFAULT_SOLR_CONFIG
+
+environ['DATA_PROVIDER_TYPE'] = 'fedora'
 
 
 @pytest.fixture
@@ -39,7 +42,7 @@ def index_with_auto_sets(mock_solr_client):
 
 @pytest.fixture
 def provider(mock_solr_client, index_with_auto_sets):
-    return DataProvider(index=index_with_auto_sets)
+    return FedoraDataProvider(index=index_with_auto_sets)
 
 
 @pytest.fixture
@@ -131,7 +134,7 @@ def test_get_record_header(mock_solr_client):
             'last_modified': '2023-06-16T08:37:29Z',
         }
     )
-    provider = DataProvider(index=mock_index)
+    provider = FedoraDataProvider(index=mock_index)
     header = provider.get_record_header('oai:fcrepo:foo')
     assert isinstance(header, RecordHeader)
     assert header.identifier == 'oai:fcrepo:foo'
@@ -158,7 +161,7 @@ def test_list_set_specs(index_with_defaults):
             'filter': 'collection_title_facet:Bar',
         },
     })
-    provider = DataProvider(index=index_with_defaults)
+    provider = FedoraDataProvider(index=index_with_defaults)
     sets, length, _ = provider.list_set_specs()
     assert sets == {'foo', 'bar'}
     assert length == 2
@@ -181,7 +184,7 @@ def test_get_sets(index_with_defaults):
             'filter': 'collection_title_facet:Bar',
         },
     })
-    provider = DataProvider(index=index_with_defaults)
+    provider = FedoraDataProvider(index=index_with_defaults)
     oai_set = provider.get_set('bar')
     assert isinstance(oai_set, Set)
     assert oai_set.spec == 'bar'
@@ -244,14 +247,14 @@ def test_list_identifiers(monkeypatch, provider, mock_solr_client, mock_solr_res
 
 @pytest.mark.parametrize(
     ('data_provider_type', 'expected_class'),
-    [('Fedora', FedoraDataProvider)]
+    [('fedora', FedoraDataProvider)]
 )
 def test_dataprovider_enum_valid(data_provider_type, expected_class):
     assert DataProviderType[data_provider_type].value is expected_class
 
 
 @pytest.mark.parametrize(
-    ('data_provider_type',),
+    ('data_provider_type'),
     ['Fedoraa', 'asdf', 'not_a_valid_provider']
 )
 def test_dataprovider_enum_invalid(data_provider_type):
