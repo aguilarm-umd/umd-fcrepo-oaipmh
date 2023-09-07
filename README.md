@@ -58,20 +58,8 @@ HANDLE_PROXY_PREFIX=...
 DATA_PROVIDER_TYPE=...
 ```
 
-And create a `solr_conf.yml` file with the following contents:
-
-```yaml
-base_query: handle:*
-handle_field: handle
-uri_field: id
-last_modified_field: last_modified
-auto_create_sets: True
-auto_set:
-  query: component:Collection
-  name_field: display_title
-  name_query_field: collection_title_facet
-sets: []
-```
+And, depending on whether you want to start an avalon or fedora server, rename the relevant solr_conf
+(solr_conf.yml.fedora or solr_conf.yml.avalon) file for whichever server you want to start.
 
 For full configuration information, see
 [Configuration](docs/configuration.md).
