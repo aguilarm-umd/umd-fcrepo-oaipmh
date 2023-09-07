@@ -146,7 +146,7 @@ class DataProvider(DataInterface):
             f'cursor={cursor})'
         )
         results = self.index.get_docs(filter_from, filter_until, filter_set, start=cursor, rows=self.limit)
-        identifiers = [str(self.get_oai_identifier(doc[self.index.handle_field])) for doc in results]
+        identifiers = [str(self.get_oai_identifier(self.index.get_handle(doc))) for doc in results]
         return identifiers, results.hits, None
 
 

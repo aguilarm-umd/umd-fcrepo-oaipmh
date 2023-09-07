@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Optional, Mapping
 
 import pysolr
 from oai_repo import OAIRepoExternalException
@@ -59,6 +59,10 @@ class Index:
         except pysolr.SolrError as e:
             logger.error(str(e))
             raise OAIRepoExternalException('Unable to connect to Solr') from e
+
+    def get_handle(self, doc: Mapping[str, Any]) -> str:
+        handle = doc[self.handle_field]
+        return handle[0] if isinstance(handle, list) else str(handle)
 
     def get_sets(self) -> dict[str, dict[str, str]]:
         sets = {s['spec']: s for s in self.config['sets']}
