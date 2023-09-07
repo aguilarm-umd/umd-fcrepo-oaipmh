@@ -1,0 +1,10 @@
+base_query: handle:*
+handle_field: handle
+uri_field: id
+last_modified_field: last_modified
+auto_create_sets: True
+auto_set:
+  query: component:Collection
+  name_field: display_title
+  name_query_field: collection_title_facet
+sets: []

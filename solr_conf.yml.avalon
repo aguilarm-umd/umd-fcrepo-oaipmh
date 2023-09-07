@@ -1,0 +1,10 @@
+base_query: has_model_ssim:MediaObject AND avalon_publisher_ssi:* AND hidden_bsi:false
+handle_field: permalink_tesim
+uri_field: id
+last_modified_field: system_modified_dtsi
+auto_create_sets: True
+auto_set:
+  query: has_model_ssim:"Admin::Collection"
+  name_field: name_ssi
+  name_query_field: collection_ssim
+sets: []
