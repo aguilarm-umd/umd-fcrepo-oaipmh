@@ -29,7 +29,7 @@ class DataProvider(DataInterface):
     oai_repository_name = EnvAttribute('OAI_REPOSITORY_NAME')
     oai_namespace_identifier = EnvAttribute('OAI_NAMESPACE_IDENTIFIER')
     report_deleted_records = EnvAttribute('REPORT_DELETED_RECORDS', 'no')
-    handle_proxy_prefix = EnvAttribute('HANDLE_PROXY_PREFIX')
+    handle_proxy_prefix = EnvAttribute('HANDLE_PROXY_PREFIX', '')
     limit: int = EnvAttribute('PAGE_SIZE', 25)
 
     def __init__(self, index: Index):
@@ -46,7 +46,7 @@ class DataProvider(DataInterface):
         """
         return OAIIdentifier(
             namespace_identifier=self.oai_namespace_identifier,
-            local_identifier=handle,
+            local_identifier=handle.replace(self.handle_proxy_prefix, ''),
         )
 
     def get_uri(self, identifier: str) -> str:
