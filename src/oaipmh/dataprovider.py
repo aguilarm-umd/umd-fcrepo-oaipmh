@@ -180,7 +180,20 @@ class AvalonDataProvider(DataProvider):
     def __init__(self, index: Index):
         super().__init__(index)
 
+    def get_metadata_formats(self, identifier: str | None = None) -> list[MetadataFormat]:
+        return [
+            MetadataFormat(
+                metadata_prefix='oai_dc',
+                metadata_namespace='http://www.openarchives.org/OAI/2.0/oai_dc/',
+                schema='http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
+            )
+        ]
+
     def get_record_metadata(self, identifier: str, metadataprefix: str) -> _Element | None:
+        if metadataprefix != 'oai_dc':
+            # only oai_dc is supported for Avalon
+            raise OAIErrorCannotDisseminateFormat
+
         uri = self.get_uri(identifier)
         response = self.session.get(self.avalon_public_url + uri + '.json')
         if response.ok:
