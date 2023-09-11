@@ -1,4 +1,4 @@
-import os
+from os import environ
 from http import HTTPStatus
 from typing import Any, Optional, TextIO
 
@@ -43,12 +43,12 @@ def get_config(config_source: Optional[str | TextIO] = None) -> dict[str, Any]:
 def app(solr_config_file: Optional[str] = None, data_provider_type: Optional[str] = None) -> Flask:
     index = Index(
         config=get_config(solr_config_file),
-        solr_client=pysolr.Solr(os.environ['SOLR_URL']),
+        solr_client=pysolr.Solr(environ['SOLR_URL']),
     )
 
     try:
         if data_provider_type is None:
-            data_provider = DataProviderType[os.environ['DATA_PROVIDER_TYPE']].value(index=index)
+            data_provider = DataProviderType[environ['DATA_PROVIDER_TYPE']].value(index=index)
         else:
             data_provider = DataProviderType[data_provider_type].value(index=index)
     except KeyError:
@@ -64,7 +64,7 @@ def create_app(data_provider: DataProvider) -> Flask:
     )
     _app.logger.info(f'Starting umd-fcrepo-oaipmh/{__version__}')
     _app.logger.debug(f'Initialized the data provider: {data_provider.get_identify()}')
-    use_xsl_stylesheet = bool(os.environ.get('XSL_STYLESHEET'))
+    use_xsl_stylesheet = bool(environ.get('XSL_STYLESHEET'))
 
     @_app.route('/')
     def root():

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import pytest
 from oai_repo.response import OAIResponse
 
-from oaipmh.dataprovider import DataProvider
+from oaipmh.dataprovider import FedoraDataProvider, AvalonDataProvider
 from oaipmh.solr import Index, DEFAULT_SOLR_CONFIG
 from oaipmh.web import create_app, get_config, status
 
@@ -17,7 +17,7 @@ def data_provider(monkeypatch, mock_solr_client, mock_solr_result):
     monkeypatch.setenv('DATESTAMP_GRANULARITY', 'YYYY-MM-DD')
     monkeypatch.setenv('EARLIEST_DATESTAMP', '2014-01-01')
     mock_solr_client.search = MagicMock(return_value=mock_solr_result)
-    return DataProvider(
+    return FedoraDataProvider(
         Index(
             config=DEFAULT_SOLR_CONFIG,
             solr_client=mock_solr_client,

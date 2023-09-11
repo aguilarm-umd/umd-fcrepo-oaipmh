@@ -33,7 +33,7 @@ See also: [OAI-PMH Specification § 4.2 Identify]
 
 ### `DATESTAMP_GRANULARITY`
 
-The level of specificity at which datestamp filters can be applied. 
+The level of specificity at which datestamp filters can be applied.
 Allowed values are:
 
 * `YYYY-MM-DDThh:mm:ssZ`
@@ -69,11 +69,11 @@ Number of records to include on each page. Defaults to 25.
 
 ### `REPORT_DELETED_RECORDS`
 
-Whether this service supports publishing notifications of record deletion. 
+Whether this service supports publishing notifications of record deletion.
 Allowed values are `yes` and `no`. Defaults to `no`.
 
-**Note:** This implementation currently does not support this feature, and 
-while setting this to `yes` will change the response to the Identify 
+**Note:** This implementation currently does not support this feature, and
+while setting this to `yes` will change the response to the Identify
 request, it will not actually enable publication of deleted record notices.
 
 See also: [OAI-PMH Specification § 4.2 Identify]
@@ -84,8 +84,8 @@ Solr index to query for record metadata.
 
 ## Configuration File
 
-Configuration of the queries and fields to use with Solr is done via a 
-YAML configuration file. Here is an example:
+Configuration of the queries and fields to use with Solr is done via a
+YAML configuration file. Here is an example for fedora:
 
 ```yaml
 base_query: handle:*
@@ -103,15 +103,30 @@ sets:
     filter: collection_title_facet:Foo AND component:Issue
 ```
 
+And here is an example for avalon:
+
+```yaml
+base_query: has_model_ssim:MediaObject AND avalon_publisher_ssi:* AND hidden_bsi:false
+handle_field: permalink_tesim
+uri_field: id
+last_modified_field: system_modified_dtsi
+auto_create_sets: True
+auto_set:
+  query: has_model_ssim:"Admin::Collection"
+  name_field: name_ssi
+  name_query_field: collection_ssim
+sets: []
+```
+
 ### `base_query`
 
-Solr query used as the starting point for all queries. Without further 
-modifications, this should return results for all harvestable records in 
+Solr query used as the starting point for all queries. Without further
+modifications, this should return results for all harvestable records in
 the index.
 
 ### `handle_field`
 
-Name of the Solr field that stores the handle, in `{prefix}/{local}` 
+Name of the Solr field that stores the handle, in `{prefix}/{local}`
 format.
 
 ### `uri_field`
@@ -120,7 +135,7 @@ Name of the Solr field that stores the URI of the resource in fcrepo.
 
 ### `last_modified_field`
 
-Name of the Solr field that stores the last-modified timestamp for the 
+Name of the Solr field that stores the last-modified timestamp for the
 resource.
 
 ### `auto_create_sets`
@@ -137,13 +152,13 @@ Solr query to return a list of resources that should be converted to sets.
 
 #### `name_field`
 
-Name of the Solr field to use as the set name. The set spec value is 
-constructed from the name by converting it to lowercase and replacing all 
+Name of the Solr field to use as the set name. The set spec value is
+constructed from the name by converting it to lowercase and replacing all
 non-alphanumeric characters with underscores.
 
 #### `name_query_field`
 
-Name of the Solr field appearing in record documents that will contain the 
+Name of the Solr field appearing in record documents that will contain the
 name of the dynamically created set.
 
 ### `sets`
