@@ -149,9 +149,6 @@ class DataProvider(DataInterface):
         identifiers = [str(self.get_oai_identifier(self.index.get_handle(doc))) for doc in results]
         return identifiers, results.hits, None
 
-    def get_record_metadata(self, identifier: str, metadataprefix: str) -> _Element | None:
-        raise NotImplementedError
-
 
 class FedoraDataProvider(DataProvider):
     def __init__(self, index: Index):
