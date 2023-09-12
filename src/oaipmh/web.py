@@ -74,9 +74,9 @@ def create_app(data_provider: DataProvider) -> Flask:
     def home():
         identify_url = data_provider.base_url + '?verb=Identify'
         return f"""
-        <h1>OAI-PMH Service for Fedora: {data_provider.oai_repository_name}</h1>
+        <h1>OAI-PMH Service for {environ['DATA_PROVIDER_TYPE'].capitalize()}: {data_provider.oai_repository_name}</h1>
         <ul>
-          <li>Version: umd-fcrepo-oaipmh/{__version__}</li>
+          <li>Version: umd-oaipmh-server/{__version__}</li>
           <li>Endpoint: {data_provider.base_url}</li>
           <li>Identify: <a href="{identify_url}">{identify_url}</a></li>
         </ul>
