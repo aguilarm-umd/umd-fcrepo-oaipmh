@@ -15,7 +15,7 @@ jsonpath-ng==1.5.3
 jwcrypto==1.4.2
 lxml==4.9.2
 MarkupSafe==2.1.2
-oai-repo==0.3.4
+oai-repo @ git+https://github.com/aguilarm-umd/oai_repo.git@a412de331c48d0ae2168b835a970698d3caa1bfb
 ply==3.11
 pycparser==2.21
 pysolr==3.9.0
