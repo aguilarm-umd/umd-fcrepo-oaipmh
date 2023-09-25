@@ -4,10 +4,9 @@ Handles script for oaipmh
 
 ## Purpose
 
-This script is supposed to add the handles field to items in Fedora
-that don't have it. Specifically it takes in the results from the plastron
-export command, and creates a new csv file with the handles column so the items
-can be updated.
+This script is supposed to create handles for items exported from Fedora that don't have handles.
+These handles are minted via UMD-Handle, and are written out to a csv file.
+The resulting csv file will be used in the plastron import command, which will update the items in Fedora.
 
 ## Development Environment
 
@@ -31,7 +30,7 @@ BASE_URL:
 # The public URL for where the items are in the frontend
 # (e.g., https://digital.lib.umd.edu/result/id/)
 PUBLIC_BASE_URL:
-# The JWT authentication token generated from fcrepo
+# The JWT authentication token generated from UMD-Handle
 AUTH:
 
 ```
