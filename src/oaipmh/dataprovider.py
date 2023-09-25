@@ -204,16 +204,32 @@ class AvalonDataProvider(DataProvider):
 
             etree.SubElement(root, "{" + self.dc + "}" + "title").text = metadata['title']
             etree.SubElement(root, "{" + self.dc + "}" + "identifier").text = handle
-            etree.SubElement(root, "{" + self.dc + "}" + "creator").text = ', '.join(metadata['creator'])
-            etree.SubElement(root, "{" + self.dc + "}" + "contributor").text = ', '.join(metadata['contributor'])
-            etree.SubElement(root, "{" + self.dc + "}" + "subject").text = ', '.join(metadata['subject'])
             etree.SubElement(root, "{" + self.dc + "}" + "rights").text = metadata['rights_statement']
             etree.SubElement(root, "{" + self.dc + "}" + "date").text = metadata['date_created']
-            etree.SubElement(root, "{" + self.dc + "}" + "coverage").text = ', '.join(metadata['geographic_subject'])
-            etree.SubElement(root, "{" + self.dc + "}" + "format").text = ', '.join(metadata['format'])
-            etree.SubElement(root, "{" + self.dc + "}" + "type").text = ', '.join(metadata['genre'])
-            etree.SubElement(root, "{" + self.dc + "}" + "format").text = ', '.join(metadata['avalon_resource_type'])
-            etree.SubElement(root, "{" + self.dc + "}" + "publisher").text = ', '.join(metadata['publisher'])
+
+            for creator in metadata['creator']:  # type: str
+                etree.SubElement(root, "{" + self.dc + "}" + "creator").text = creator
+
+            for contributor in metadata['contributor']:  # type: str
+                etree.SubElement(root, "{" + self.dc + "}" + "contributor").text = contributor
+
+            for subject in metadata['subject']:  # type: str
+                etree.SubElement(root, "{" + self.dc + "}" + "subject").text = subject
+
+            for geographic_subject in metadata['geographic_subject']:  # type: str
+                etree.SubElement(root, "{" + self.dc + "}" + "coverage").text = geographic_subject
+
+            for format in metadata['format']:  # type: str
+                etree.SubElement(root, "{" + self.dc + "}" + "format").text = format
+
+            for genre in metadata['genre']:  # type: str
+                etree.SubElement(root, "{" + self.dc + "}" + "type").text = genre
+
+            for avalon_resource_type in metadata['avalon_resource_type']:  # type: str
+                etree.SubElement(root, "{" + self.dc + "}" + "format").text = avalon_resource_type
+
+            for publisher in metadata['publisher']:  # type: str
+                etree.SubElement(root, "{" + self.dc + "}" + "publisher").text = publisher
 
             return root
 
