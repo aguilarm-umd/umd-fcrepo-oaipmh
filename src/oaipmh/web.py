@@ -8,7 +8,8 @@ from flask import Flask, request, abort, redirect, url_for
 from lxml import etree
 # noinspection PyProtectedMember
 from lxml.etree import ElementTree, _ElementTree
-from oai_repo import OAIRepository, OAIRepoInternalException, OAIRepoExternalException
+from oai_repo.repository import OAIRepository
+from oai_repo.exceptions import OAIRepoInternalException, OAIRepoExternalException
 from oai_repo.response import OAIResponse
 
 from oaipmh import __version__
