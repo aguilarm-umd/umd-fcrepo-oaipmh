@@ -11,21 +11,21 @@ Flask==2.3.2
 idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
-jsonpath-ng==1.5.3
+jsonpath-ng==1.6.0
 jwcrypto==1.4.2
 lxml==4.9.2
 MarkupSafe==2.1.2
-oai-repo @ git+https://github.com/aguilarm-umd/oai_repo.git@a412de331c48d0ae2168b835a970698d3caa1bfb
+oai-repo==0.4.2
 ply==3.11
 pycparser==2.21
 pysolr==3.9.0
 python-dotenv==1.0.0
 PyYAML==6.0
-requests==2.30.0
+requests==2.31.0
 requests-jwtauth @ git+https://github.com/umd-lib/requests-jwtauth.git@1.0.0
 six==1.16.0
 urllib3==2.0.2
-validators==0.20.0
+validators==0.22.0
 waitress==2.1.2
 Werkzeug==2.3.4
 wrapt==1.15.0
