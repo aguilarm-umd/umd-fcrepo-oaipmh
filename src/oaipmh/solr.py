@@ -96,8 +96,8 @@ class Index:
 
     def get_docs(
             self,
-            filter_from: Optional[str] = None,
-            filter_until: Optional[str] = None,
+            filter_from: Optional[datetime] = None,
+            filter_until: Optional[datetime] = None,
             filter_set: Optional[str] = None,
             start: Optional[int] = 0,
             rows: Optional[int] = 25,

@@ -1,4 +1,5 @@
 from os import environ
+from re import match
 from http import HTTPStatus
 from typing import Any, Optional, TextIO
 
@@ -94,6 +95,10 @@ def create_app(data_provider: DataProvider) -> Flask:
                 **request.args,
                 **request.form,
             }
+
+            if 'until' in parameters and match(r'^\d\d\d\d-\d\d-\d\d$', parameters['until']):
+                parameters['until'] += 'T23:59:59Z'
+
             response = repo.process(parameters)
         except OAIRepoExternalException as e:
             # An API call timed out or returned a non-200 HTTP code.
