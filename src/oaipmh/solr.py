@@ -65,22 +65,35 @@ class Index:
         return handle[0] if isinstance(handle, list) else str(handle)
 
     def get_sets(self) -> dict[str, dict[str, str]]:
+        start = 0
+        rows = 10
+
         sets = {s['spec']: s for s in self.config['sets']}
         if self.auto_create_sets:
-            try:
-                results = self.search(q=self.auto_set_config['query'], fl=self.auto_set_config['name_field'])
-            except KeyError as e:
-                logger.error(f'Missing auto_set_config key {e}')
-                raise OAIRepoInternalException('Configuration error') from e
+            while True:
+                try:
+                    logger.debug(f'Retrieving rows {start} to {start + rows}')
+                    results = self.search(q=self.auto_set_config['query'],
+                                          fl=self.auto_set_config['name_field'],
+                                          start=start,
+                                          rows=rows)
+                except KeyError as e:
+                    logger.error(f'Missing auto_set_config key {e}')
+                    raise OAIRepoInternalException('Configuration error') from e
 
-            for doc in results:
-                name = doc[self.auto_set_config['name_field']]
-                spec = get_set_spec(name)
-                sets[spec] = {
-                    'spec': spec,
-                    'name': name,
-                    'filter': f"{self.auto_set_config['name_query_field']}:{solr_quoted(name)}"
-                }
+                for doc in results:
+                    name = doc[self.auto_set_config['name_field']]
+                    spec = get_set_spec(name)
+                    sets[spec] = {
+                        'spec': spec,
+                        'name': name,
+                        'filter': f"{self.auto_set_config['name_query_field']}:{solr_quoted(name)}"
+                    }
+
+                if start + rows >= results.hits:
+                    break
+                else:
+                    start += rows
         return sets
 
     def get_set(self, spec: str) -> dict[str, str]:
