@@ -1,4 +1,4 @@
-# umd-fcrepo-oaipmh
+# umd-oaipmh-server
 
 OAI-PMH Server for Fedora
 
@@ -24,10 +24,10 @@ Python version: 3.11
 ### Installation
 
 ```bash
-git clone git@github.com:umd-lib/umd-fcrepo-oaipmh.git
-cd umd-fcrepo-oaipmh
+git clone git@github.com:umd-lib/umd-oaipmh-server.git
+cd umd-oaipmh-server
 pyenv install --skip-existing $(cat .python-version)
-python -m venv .venv --prompt umd-fcrepo-oaipmh-py$(cat .python-version)
+python -m venv .venv --prompt umd-oaipmh-server-py$(cat .python-version)
 pip install -r requirements.test.txt -e .
 ```
 
@@ -118,7 +118,7 @@ Configuration of pycodestyle is found in the [tox.ini](tox.ini) file.
 Build the image:
 
 ```bash
-docker build -t docker.lib.umd.edu/fcrepo-oaipmh:latest .
+docker build -t docker.lib.umd.edu/oaipmh-server:latest .
 ```
 
 If you need to build for multiple architectures (e.g., AMD and ARM), you
@@ -128,10 +128,10 @@ to a Docker repository that you can push images to:
 
 ```bash
 docker buildx build --builder local --platform linux/amd64,linux/arm64 \
-    -t docker.lib.umd.edu/fcrepo-oaipmh:latest --push .
+    -t docker.lib.umd.edu/oaipmh-server:latest --push .
 
 # then pull the image so it is available locally
-docker pull docker.lib.umd.edu/fcrepo-oaipmh:latest
+docker pull docker.lib.umd.edu/oaipmh-server:latest
 ```
 
 Run the container:
@@ -144,7 +144,7 @@ docker run -d -p 5000:5000 \
     -e EARLIEST_DATESTAMP=2014-01-01T00:00:00Z \
     -e FCREPO_JWT_TOKEN=... \
     -e SOLR_URL=... \
-    docker.lib.umd.edu/fcrepo-oaipmh:latest
+    docker.lib.umd.edu/oaipmh-server:latest
 ```
 
 If you created a `.env` file (see [Configuration](#configuration)), you
@@ -153,7 +153,7 @@ can run the Docker image using that file.
 ```bash
 docker run -d -p 5000:5000 \
     --env-file .env \
-    docker.lib.umd.edu/fcrepo-oaipmh:latest
+    docker.lib.umd.edu/oaipmh-server:latest
 ```
 
 Note: To refer to services running on the host machine (e.g., Solr) in the
