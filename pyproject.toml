@@ -1,6 +1,6 @@
 [project]
 name = "umd-fcrepo-oaipmh"
-version = "1.1.0rc1"
+version = "1.1.0rc2"
 dependencies = [
     "flask",
     "lxml",
