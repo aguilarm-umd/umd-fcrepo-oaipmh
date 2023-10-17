@@ -65,35 +65,34 @@ class Index:
         return handle[0] if isinstance(handle, list) else str(handle)
 
     def get_sets(self) -> dict[str, dict[str, str]]:
-        start = 0
-        rows = 10
-
         sets = {s['spec']: s for s in self.config['sets']}
+
         if self.auto_create_sets:
-            while True:
-                try:
-                    logger.debug(f'Retrieving rows {start} to {start + rows}')
-                    results = self.search(q=self.auto_set_config['query'],
-                                          fl=self.auto_set_config['name_field'],
-                                          start=start,
-                                          rows=rows)
-                except KeyError as e:
-                    logger.error(f'Missing auto_set_config key {e}')
-                    raise OAIRepoInternalException('Configuration error') from e
+            try:
+                facet_field = self.auto_set_config['name_query_field']
+                results = self.search(
+                    q=self.base_query,
+                    rows=0,
+                    facet='on',
+                    **{
+                        'facet.field': facet_field,
+                        'facet.mincount': 1,
+                    })
+            except KeyError as e:
+                logger.error(f'Missing auto_set_config key {e}')
+                raise OAIRepoInternalException('Configuration error') from e
 
-                for doc in results:
-                    name = doc[self.auto_set_config['name_field']]
-                    spec = get_set_spec(name)
-                    sets[spec] = {
-                        'spec': spec,
-                        'name': name,
-                        'filter': f"{self.auto_set_config['name_query_field']}:{solr_quoted(name)}"
-                    }
+            # slice by every second element to get the even-indexed elements (i.e., the facet names)
+            facets = results.facets['facet_fields'][facet_field][::2]
 
-                if start + rows >= results.hits:
-                    break
-                else:
-                    start += rows
+            for name in facets:
+                spec = get_set_spec(name)
+                sets[spec] = {
+                    'spec': spec,
+                    'name': name,
+                    'filter': f"{facet_field}:{solr_quoted(name)}"
+                }
+
         return sets
 
     def get_set(self, spec: str) -> dict[str, str]:
