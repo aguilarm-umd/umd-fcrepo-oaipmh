@@ -65,31 +65,32 @@ class Index:
         return handle[0] if isinstance(handle, list) else str(handle)
 
     def get_sets(self) -> dict[str, dict[str, str]]:
-        filter_params = {
-            'facet': 'on',
-            'facet.field': self.auto_set_config['name_query_field'],
-            'rows': '0',
-            'facet.mincount': '1'
-        }
-
         sets = {s['spec']: s for s in self.config['sets']}
+
         if self.auto_create_sets:
             try:
-                results = self.search(q=self.base_query,
-                                      fl=self.auto_set_config['name_field'],
-                                      **filter_params)
+                facet_field = self.auto_set_config['name_query_field']
+                results = self.search(
+                    q=self.base_query,
+                    rows=0,
+                    facet='on',
+                    **{
+                        'facet.field': facet_field,
+                        'facet.mincount': 1,
+                    })
             except KeyError as e:
                 logger.error(f'Missing auto_set_config key {e}')
                 raise OAIRepoInternalException('Configuration error') from e
 
-            facets = results.facets['facet_fields'][self.auto_set_config['name_query_field']][::2]
+            # slice by every second element to get the even-indexed elements (i.e., the facet names)
+            facets = results.facets['facet_fields'][facet_field][::2]
 
             for name in facets:
                 spec = get_set_spec(name)
                 sets[spec] = {
                     'spec': spec,
                     'name': name,
-                    'filter': f"{self.auto_set_config['name_query_field']}:{solr_quoted(name)}"
+                    'filter': f"{facet_field}:{solr_quoted(name)}"
                 }
 
         return sets
