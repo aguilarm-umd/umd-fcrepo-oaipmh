@@ -205,7 +205,7 @@ class AvalonDataProvider(DataProvider):
             etree.SubElement(root, "{" + self.dc + "}" + "title").text = metadata['title']
             etree.SubElement(root, "{" + self.dc + "}" + "identifier").text = handle
             etree.SubElement(root, "{" + self.dc + "}" + "rights").text = metadata['rights_statement']
-            etree.SubElement(root, "{" + self.dc + "}" + "date").text = metadata['date_created']
+            etree.SubElement(root, "{" + self.dc + "}" + "date").text = metadata['date_issued']
 
             for creator in metadata['creator']:  # type: str
                 etree.SubElement(root, "{" + self.dc + "}" + "creator").text = creator
@@ -235,7 +235,7 @@ class AvalonDataProvider(DataProvider):
 
         else:
             logger.error(f'GET {uri} -> {response.status_code} {response.reason}')
-            raise OAIRepoExternalException('Unable to retrieve resource from fcrepo')
+            raise OAIRepoExternalException('Unable to retrieve resource from avalon')
 
 
 class DataProviderType(Enum):
