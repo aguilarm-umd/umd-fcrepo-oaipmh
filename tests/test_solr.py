@@ -56,10 +56,23 @@ def test_index_accessors(mock_solr_client):
     assert len(index.get_sets()) == 0
 
 
-def test_auto_create_sets(mock_solr_client):
-    mock_solr_client.search = MagicMock(
-        return_value=[{'display_title': 'Foo Collection'}, {'display_title': 'Bar Stuff'}],
+@pytest.fixture
+def mock_facets_result():
+    return MagicMock(
+        spec=pysolr.Results,
+        facets={
+            'facet_fields': {
+                'collection_title_facet': [
+                    'Foo Collection', 12,
+                    'Bar Stuff', 17,
+                ]
+            }
+        }
     )
+
+
+def test_auto_create_sets(mock_solr_client, mock_facets_result):
+    mock_solr_client.search = MagicMock(return_value=mock_facets_result)
     index = Index(
         config={
             **DEFAULT_SOLR_CONFIG,
