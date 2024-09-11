@@ -9,7 +9,7 @@ dependencies = [
     "python-dotenv",
     "PyYAML",
     "requests",
-    "requests-jwtauth@git+https://github.com/umd-lib/requests-jwtauth.git@1.0.0",
+    "requests-jwtauth",
     "waitress",
     "Sickle"
 ]
