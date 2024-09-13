@@ -44,8 +44,8 @@ OAI_NAMESPACE_IDENTIFIER=...
 OAI_REPOSITORY_NAME=...
 # earliest datestamp of items in this repository
 EARLIEST_DATESTAMP=2014-01-01T00:00:00Z
-# JWT bearer token for accessing the Fedora repository
-FCREPO_JWT_TOKEN=...
+# JWT SECRET for the server to generate its own token to access the Fedora repository
+JWT_SECRET=...
 # URL to the Solr core to search
 SOLR_URL=...
 # enable debugging and hot reloading when run via "flask run"
@@ -142,7 +142,7 @@ docker run -d -p 5000:5000 \
     -e OAI_NAMESPACE_IDENTIFIER=... \
     -e OAI_REPOSITORY_NAME=... \
     -e EARLIEST_DATESTAMP=2014-01-01T00:00:00Z \
-    -e FCREPO_JWT_TOKEN=... \
+    -e JWT_SECRET=... \
     -e SOLR_URL=... \
     docker.lib.umd.edu/oaipmh-server:latest
 ```

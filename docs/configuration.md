@@ -12,7 +12,7 @@ the queries and fields it uses when making Solr requests.
 | `BASE_URL`                 | http://localhost:5000/ |
 | `DATESTAMP_GRANULARITY`    | YYYY-MM-DDThh:mm:ssZ   |
 | `EARLIEST_DATESTAMP`       |                        |
-| `FCREPO_JWT_TOKEN`         |                        |
+| `JWT_SECRET`               |                        |
 | `OAI_NAMESPACE_IDENTIFIER` |                        |
 | `OAI_REPOSITORY_NAME`      |                        |
 | `PAGE_SIZE`                | 25                     |
@@ -49,9 +49,9 @@ The earliest datestamp for which metadata or records can be retrieved.
 
 See also: [OAI-PMH Specification § 4.2 Identify]
 
-### `FCREPO_JWT_TOKEN`
+### `JWT_SECRET`
 
-JWT authentication token for requests to the fcrepo repository.
+JWT secret for the server to generate its own token to access the fcrepo repository.
 
 ### `OAI_NAMESPACE_IDENTIFIER`
 
