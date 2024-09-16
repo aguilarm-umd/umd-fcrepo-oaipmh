@@ -159,10 +159,12 @@ class DataProvider(DataInterface):
 
 
 class FedoraDataProvider(DataProvider):
+    secret = EnvAttribute('JWT_SECRET')
+
     def __init__(self, index: Index):
         super().__init__(index)
         self.session.auth = JWTSecretAuth(
-            secret=environ.get('JWT_SECRET'),
+            secret=self.secret,
             claims={
                 'sub': 'umd-oaipmh-server',
                 'iss': 'umd-oaipmh-server',

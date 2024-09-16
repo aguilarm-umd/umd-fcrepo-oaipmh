@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock
+from uuid import uuid4
 
 import pytest
 from lxml import etree
@@ -11,6 +12,7 @@ from oaipmh.oai import OAIIdentifier
 from oaipmh.solr import Index, DEFAULT_SOLR_CONFIG
 
 environ['DATA_PROVIDER_TYPE'] = 'fedora'
+environ['JWT_SECRET'] = str(uuid4())
 
 
 @pytest.fixture
