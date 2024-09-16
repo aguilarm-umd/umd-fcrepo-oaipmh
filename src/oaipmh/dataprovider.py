@@ -4,13 +4,21 @@ from enum import Enum
 from os import environ
 
 from lxml import etree
+
 # noinspection PyProtectedMember
 from lxml.etree import _Element
-from oai_repo import MetadataFormat, DataInterface, Identify, RecordHeader, Set, OAIRepoExternalException
+from oai_repo import (
+    DataInterface,
+    Identify,
+    MetadataFormat,
+    OAIRepoExternalException,
+    RecordHeader,
+    Set,
+)
 from oai_repo.exceptions import OAIErrorCannotDisseminateFormat
 from oai_repo.helpers import granularity_format
 from requests import Session
-from requests_jwtauth import HTTPBearerAuth
+from requests_jwtauth import JWTSecretAuth
 
 from oaipmh.oai import OAIIdentifier
 from oaipmh.solr import Index
@@ -151,9 +159,17 @@ class DataProvider(DataInterface):
 
 
 class FedoraDataProvider(DataProvider):
+    secret = EnvAttribute('JWT_SECRET')
+
     def __init__(self, index: Index):
         super().__init__(index)
-        self.session.auth = HTTPBearerAuth(environ.get('FCREPO_JWT_TOKEN'))
+        self.session.auth = JWTSecretAuth(
+            secret=self.secret,
+            claims={
+                'sub': 'umd-oaipmh-server',
+                'iss': 'umd-oaipmh-server',
+                'role': 'fedoraAdmin'
+            })
 
     def get_record_metadata(self, identifier: str, metadataprefix: str) -> _Element | None:
         uri = self.get_uri(identifier)

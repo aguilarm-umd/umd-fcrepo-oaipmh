@@ -22,7 +22,7 @@ pysolr==3.9.0
 python-dotenv==1.0.0
 PyYAML==6.0
 requests==2.31.0
-requests-jwtauth @ git+https://github.com/umd-lib/requests-jwtauth.git@1.0.0
+requests-jwtauth==1.0.1
 six==1.16.0
 urllib3==2.0.2
 validators==0.22.0
