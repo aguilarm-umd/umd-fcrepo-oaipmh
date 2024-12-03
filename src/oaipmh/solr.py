@@ -11,15 +11,6 @@ from oaipmh.oai import get_set_spec
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_SOLR_CONFIG = {
-    'base_query': 'handle:*',
-    'handle_field': 'handle',
-    'uri_field': 'id',
-    'last_modified_field': 'last_modified',
-    'auto_create_sets': False,
-    'sets': [],
-}
-
 
 class Index:
     def __init__(self, config: dict[str, Any], solr_client: pysolr.Solr):
